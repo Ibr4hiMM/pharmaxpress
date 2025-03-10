@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Products{% endblock %}
+
+{% block content %}
+    <section class="products-container">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Products</h2>
+            </div>
+
+            <!-- Product Filters - Can be enhanced with JS functionality -->
+    <form method="GET" action="{{ url_for('products') }}" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <label for="categoryFilter" style="margin: 0;">Category:</label>
+            <select id="categoryFilter" name="category" class="form-control" style="width: auto; padding: 0.5rem;">
+                <option value="all" {% if category == 'all' %}selected{% endif %}>All Categories</option>
+                <option value="Vitamins" {% if category == 'Vitamins' %}selected{% endif %}>Vitamins</option>
+                <option value="Allergy relief" {% if category == 'Allergy relief' %}selected{% endif %}>Allergy relief</option>
+                <option value="Baby Supplements" {% if category == 'Baby Supplements' %}selected{% endif %}>Baby Supplements</option>
+                <option value="Hair Care" {% if category == 'Hair Care' %}selected{% endif %}>Hair Care</option>
+                <option value="Skin Care" {% if category == 'Skin Care' %}selected{% endif %}>Skin Care</option>
+            </select>
+        </div>
+
+        <div style="position: relative;">
+            <input type="text" name="search" id="searchProducts" placeholder="Search products..." class="form-control" style="padding-right: 40px;" value="{{ search }}">
+            <button type="submit" style="position: absolute; right: 0; top: 0; height: 100%; background: none; border: none; padding: 0 10px; cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+
+    <script>
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            this.form.submit();
+        });
+    </script>
+
+
+    <!-- Products Grid -->
+            <div class="products-grid">
+                {% for product in products %}
+                    <div class="product-card">
+                        <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="product-image">
+                        <div class="product-details">
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            <p class="product-description">{{ product.description }}</p>
+                            <div class="product-meta">
+                                <span class="product-price">{{ product.price }} SAR</span>
+                                <span class="product-stock">Stock: {{ product.stock }}</span>
+                            </div>
+                            <div class="product-actions">
+                                <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+                                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; color: var(--gray-500); margin-bottom: 1rem; display: block;"></i>
+                        <p>No products available at the moment.</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+    <!-- Pagination -->
+    {% if pagination.pages > 1 %}
+        <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 3rem;">
+            {% if pagination.has_prev %}
+                <a href="{{ url_for('products', page=pagination.prev_num, category=category, search=search) }}" class="btn btn-custom-blue" style="padding: 0.5rem 1rem;">&laquo;</a>
+            {% else %}
+                <span class="btn btn-custom-blue disabled" style="padding: 0.5rem 1rem;">&laquo;</span>
+            {% endif %}
+
+            {% for page_num in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num == pagination.page %}
+                        <span class="btn btn-custom-blue active" style="padding: 0.5rem 1rem;">{{ page_num }}</span>
+                    {% else %}
+                        <a href="{{ url_for('products', page=page_num, category=category, search=search) }}" class="btn btn-custom-blue" style="padding: 0.5rem 1rem;">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    <span class="btn btn-custom-blue disabled" style="padding: 0.5rem 1rem;">…</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.has_next %}
+                <a href="{{ url_for('products', page=pagination.next_num, category=category, search=search) }}" class="btn btn-custom-blue" style="padding: 0.5rem 1rem;">&raquo;</a>
+            {% else %}
+                <span class="btn btn-custom-blue disabled" style="padding: 0.5rem 1rem;">&raquo;</span>
+            {% endif %}
+        </div>
+    {% endif %}
+
+
+    <!-- Browse Categories -->
+    <section style="background-color: var(--gray-100); padding: 3rem 0;">
+        <div class="container">
+            <div class="section-title">
+                <h2>Browse Categories</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+                {% for cat in categories %}
+                    <a href="{{ url_for('products', category=cat) }}" style="text-decoration: none;">
+                        <div style="text-align: center; padding: 2rem; background: white; border-radius: 0.5rem; box-shadow: var(--shadow); cursor: pointer;">
+                            {% if cat == 'Vitamins' %}
+                                <i class="fas fa-apple-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                            {% elif cat == 'Allergy relief' %}
+                                <i class="fas fa-allergies" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                            {% elif cat == 'Baby Supplements' %}
+                                <i class="fas fa-baby" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                            {% elif cat == 'Hair Care' %}
+                                <i class="fas fa-cut" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                            {% elif cat == 'Skin Care' %}
+                                <i class="fas fa-heart" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                            {% else %}
+                                <i class="fas fa-box" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                            {% endif %}
+                            <h3 style="margin-bottom: 0.5rem;">{{ cat }}</h3>
+                            <!-- Optional description or tagline could be added here -->
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // Simple filter functionality (this is just UI, would need backend implementation)
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            console.log('Category selected:', this.value);
+            // Here you would typically submit a form or make an AJAX request
+        });
+
+        // Simple search functionality (this is just UI, would need backend implementation)
+        document.getElementById('searchProducts').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                console.log('Search query:', this.value);
+                // Here you would typically submit a form or make an AJAX request
+            }
+        });
+    </script>
+{% endblock %}

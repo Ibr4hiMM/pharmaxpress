@@ -1,0 +1,12 @@
+{% extends 'admin/base.html' %}
+
+{% block navbar %}
+    {{ super() }}
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="{{ url_for('logout') }}" style="padding-top: 15px; padding-bottom: 15px;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </li>
+    </ul>
+{% endblock %}

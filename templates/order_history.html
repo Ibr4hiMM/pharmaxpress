@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Order History{% endblock %}
+
+{% block content %}
+    <section class="container" style="padding: 3rem 0;">
+        <div class="section-title">
+            <h2>Your Order History</h2>
+        </div>
+        {% if orders %}
+            <table class="cart-table">
+                <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date Ordered</th>
+                    <th>Status</th>
+                    <th>Total (SAR)</th>
+                    <th>Details</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.date_ordered.strftime("%Y-%m-%d %H:%M") }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>{{ order.total }}</td>
+                        <td>
+                            <a href="{{ url_for('order_confirmation', order_id=order.id) }}" class="btn btn-custom-blue">View Order</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>You haven't placed any orders yet.</p>
+        {% endif %}
+    </section>
+{% endblock %}

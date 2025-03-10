@@ -1,0 +1,89 @@
+<!-- app/templates/order_confirmation.html -->
+{% extends "base.html" %}
+
+{% block title %}Order Confirmation{% endblock %}
+
+{% block content %}
+    <section class="container" style="padding: 3rem 0;">
+        <div style="text-align: center; max-width: 600px; margin: 0 auto 3rem;">
+            <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--secondary); margin-bottom: 1.5rem;"></i>
+            <h2 style="margin-bottom: 1rem;">Thank You for Your Order!</h2>
+            <p style="margin-bottom: 2rem; color: var(--gray-600);">
+                Your order has been placed successfully. You will receive an email confirmation shortly.
+            </p>
+
+            <div style="background-color: var(--gray-100); padding: 1rem; border-radius: 0.35rem; margin-bottom: 2rem;">
+                <p style="margin: 0;">Order #: <strong>{{ order.id }}</strong></p>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="{{ url_for('index') }}" class="btn btn-custom-blue">Continue Shopping</a>
+            </div>
+        </div>
+
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Order Details</h3>
+            <table class="cart-table">
+                <thead>
+                <tr>
+                    <th style="width: 60%;">Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in order_items %}
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <img src="{{ url_for('static', filename='images/' + item.product.image) }}"
+                                     alt="{{ item.product.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 0.25rem;">
+                                <span>{{ item.product.name }}</span>
+                            </div>
+                        </td>
+                        <td>{{ item.price }} SAR</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.total }} SAR</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Subtotal</strong></td>
+                    <td>{{ order.total - (order.total * 0.15)| round(2) }} SAR</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Tax</strong></td>
+                    <td>{{ (order.total * 0.15)|round(2) }} SAR</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
+                    <td><strong>{{ order.total }} SAR</strong></td>
+                </tr>
+                </tfoot>
+            </table>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div>
+                    <h4 style="margin-bottom: 1rem; font-size: 1rem;">Shipping Information</h4>
+                    <div style="background-color: var(--gray-100); padding: 1rem; border-radius: 0.35rem;">
+                        <p style="margin: 0 0 0.5rem;">{{ order.first_name }} {{ order.last_name }}</p>
+                        <p style="margin: 0 0 0.5rem;">{{ order.address }}</p>
+                        <p style="margin: 0 0 0.5rem;">{{ order.city }}, {{ order.province }} {{ order.zip_code }}</p>
+                        <p style="margin: 0;">{{ order.phone }}</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 style="margin-bottom: 1rem; font-size: 1rem;">Payment Information</h4>
+                    <div style="background-color: var(--gray-100); padding: 1rem; border-radius: 0.35rem;">
+                        <p style="margin: 0 0 0.5rem;">Payment Method: Credit Card</p>
+                        <p style="margin: 0 0 0.5rem;">Last 4 Digits: **** **** **** {{ order.card_last4 }}</p>
+                        <p style="margin: 0;">Cardholder Name: {{ order.cardholder_name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

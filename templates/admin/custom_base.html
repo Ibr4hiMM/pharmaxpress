@@ -1,0 +1,11 @@
+{% extends 'admin/base.html' %}
+
+{# Try overriding navbar_menu #}
+{% block navbar %}
+    {{ super() }}
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+{% endblock %}
+
+

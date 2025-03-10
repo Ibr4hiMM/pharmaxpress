@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaStore - {% block title %}{% endblock %}</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% block styles %}{% endblock %}
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <div class="header-container">
+        <a href="{{ url_for('index') }}" class="logo">
+            <i class="fas fa-capsules"></i>
+            PharmaXPress
+        </a>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <nav id="mainNav">
+            <ul>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="{{ url_for('products') }}"><i class="fas fa-pills"></i> Products</a></li>
+                <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i> About Us</a></li>
+                <li><a href="{{ url_for('contact') }}"><i class="fas fa-envelope"></i> Contact</a></li>
+                {% if session.get('user_id') %}
+                    <li><a href="{{ url_for('cart') }}"><i class="fas fa-shopping-cart"></i> Cart
+                        <span class="cart-count">{{ session.cart|length if session.cart else 0 }}</span></a>
+                    </li>
+                    <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    <li><a href="{{ url_for('order_history') }}">Order History</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Flash Messages -->
+<div class="flash-container">
+    {% for message in get_flashed_messages() %}
+        <div class="flash-message flash-info">
+            {{ message }}
+            <span class="flash-close">&times;</span>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Main Content -->
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-container">
+            <div class="footer-about">
+                <div class="footer-logo">
+                    <i class="fas fa-capsules"></i> PharmaXPress
+                </div>
+                <p>Your trusted online pharmacy with quality medicines and health products delivered to your door.</p>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 3761 20th St, Al-Thuqbah, Al Khobar 34624</p>
+                <p><i class="fas fa-phone"></i> +966 53 699 5643</p>
+                <p><i class="fas fa-envelope"></i> info@pharmaxpress.com</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 PharmaXPress. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script>
+    // Mobile Menu Toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+        document.getElementById('mainNav').classList.toggle('active');
+    });
+
+    // Flash Message Close
+    document.querySelectorAll('.flash-close').forEach(function(close) {
+        close.addEventListener('click', function() {
+            this.parentElement.style.display = 'none';
+        });
+    });
+
+    // Auto-hide flash messages after 5 seconds
+    setTimeout(function() {
+        document.querySelectorAll('.flash-message').forEach(function(message) {
+            message.style.display = 'none';
+        });
+    }, 5000);
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

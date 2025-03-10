@@ -1,0 +1,41 @@
+<!-- app/templates/signup.html -->
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+    <section class="container" style="padding: 3rem 0;">
+        <div class="form-container">
+            <h2>Create an Account</h2>
+
+            <form method="POST" action="{{ url_for('signup') }}">
+                <div class="form-group">
+                    <label for="username" class="form-label">Full Name</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                    <small class="form-text">Password must be at least 8 characters long</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            </form>
+
+            <div class="form-footer">
+                <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terms and conditions text for reference (not displayed) -->
+    <div style="display: none;">
+        <p>By creating an account, you agree to our Terms of Service and Privacy Policy.</p>
+    </div>
+{% endblock %}
