@@ -147,8 +147,8 @@ def signup():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
 
-        # Check if email already exists
         user = User.query.filter_by(email=email).first()
         if user:
             flash('Email already registered.')
@@ -157,6 +157,10 @@ def signup():
         # Enforce minimum length of 8 characters
         if len(password) < 8:
             flash('Password must be at least 8 characters long.')
+            return redirect(url_for('signup'))
+
+        if password != confirm_password:
+            flash('Passwords do not match. Please try again.')
             return redirect(url_for('signup'))
 
         # Create new user
