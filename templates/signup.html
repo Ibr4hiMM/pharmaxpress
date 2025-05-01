@@ -21,8 +21,34 @@
 
                 <div class="form-group">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
-                    <small class="form-text">Password must be at least 8 characters long</small>
+                    <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            class="form-control"
+                            minlength="8"
+                            required
+                            aria-describedby="pwd-requirements"
+                    >
+                    <div id="pwd-requirements" class="form-text">
+                        <ul style="margin: .5rem 0; padding-left:1.2rem;">
+                            <li id="pw-len">At least 8 characters</li>
+                            <li id="pw-lower">Lowercase letter</li>
+                            <li id="pw-upper">Uppercase letter</li>
+                            <li id="pw-digit">Number</li>
+                            <li id="pw-special">Special character</li>
+                        </ul>
+                    </div>
+
+                    <!-- strength meter -->
+                    <meter
+                            id="pwd-strength-meter"
+                            min="0" max="5" low="2" high="4" optimum="5"
+                            title="Password strength"
+                            style="width:100%; height:1rem; margin-top:.5rem;"
+                    ></meter>
+
+                    <p id="password-error" aria-live="polite" class="form-error"></p>
                 </div>
 
                 <!-- New Password Confirmation Field -->
