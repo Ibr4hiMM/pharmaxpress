@@ -4,6 +4,49 @@ document.addEventListener('DOMContentLoaded', () => {
         // Disable native validation UI
         form.setAttribute('novalidate', '');
 
+        // Password strength helper
+        function scorePassword(pw) {
+            let score = 0;
+            if (pw.length >= 8) score++;
+            if (/[a-z]/.test(pw)) score++;
+            if (/[A-Z]/.test(pw)) score++;
+            if (/\d/.test(pw)) score++;
+            if (/[^A-Za-z0-9]/.test(pw)) score++;
+            return score;
+        }
+
+        // Only on the signup page password field...
+        const pwdInput = document.getElementById('password');
+        if (pwdInput) {
+            const meter = document.getElementById('pwd-strength-meter');
+            const errEl = document.getElementById('password-error');
+            const submitBtn = pwdInput.closest('form').querySelector('button[type="submit"]');
+
+            pwdInput.addEventListener('input', () => {
+                const val = pwdInput.value;
+                const score = scorePassword(val);
+
+                // Update the meter and checklist colors
+                meter.value = score;
+                document.getElementById('pw-len').style.color     = val.length >= 8           ? 'green' : '';
+                document.getElementById('pw-lower').style.color   = /[a-z]/.test(val)         ? 'green' : '';
+                document.getElementById('pw-upper').style.color   = /[A-Z]/.test(val)         ? 'green' : '';
+                document.getElementById('pw-digit').style.color   = /\d/.test(val)            ? 'green' : '';
+                document.getElementById('pw-special').style.color = /[^A-Za-z0-9]/.test(val)  ? 'green' : '';
+
+                // **New:** allow form submit as soon as length >= 8
+                if (val.length >= 8) {
+                    pwdInput.setCustomValidity('');
+                    errEl.textContent = '';
+                    submitBtn.disabled = false;
+                } else {
+                    pwdInput.setCustomValidity('Password must be at least 8 characters.');
+                    errEl.textContent = 'Password must be at least 8 characters.';
+                    submitBtn.disabled = true;
+                }
+            });
+        }
+
         const submitBtn = form.querySelector('button[type="submit"]');
         const inputs    = Array.from(form.querySelectorAll('input, textarea'));
         const errors    = {};
