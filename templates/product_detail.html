@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} Details{% endblock %}
+
+{% block content %}
+    <section class="container" style="padding: 3rem 0;">
+        <div class="section-title">
+            <h2>{{ product.name }}</h2>
+        </div>
+
+        <div class="product-detail-header" style="display:flex; align-items:center; gap:0.5rem;">
+            <button id="helpBtn" class="btn-help" aria-label="Help">
+                <i class="fas fa-question-circle"></i>
+            </button>
+        </div>
+        <div id="helpModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" aria-label="Close">&times;</span>
+                <h3>How to Use This Page</h3>
+                <ul>
+                    <li>Review the product details (description, price, stock).</li>
+                    <li>Enter the quantity you wish to purchase (max {{ product.stock }}).</li>
+                    <li>Click “Add to Cart” to save items in your shopping cart.</li>
+                    <li>Stock validation prevents adding more than available.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+            <div style="flex:1; min-width:300px;">
+                <img
+                        src="{{ url_for('static', filename='images/' + product.image) }}"
+                        alt="{{ product.name }}"
+                        style="width:100%; object-fit:cover; border-radius:0.5rem;"
+                >
+            </div>
+            <div style="flex:2; min-width:300px;">
+                <p>{{ product.description }}</p>
+                <p><strong>Price:</strong> {{ product.price }} SAR</p>
+                <p><strong>In Stock:</strong> {{ product.stock }}</p>
+
+                <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+                    <div class="form-group" style="max-width:120px;">
+                        <label for="qty">Quantity</label>
+                        <input
+                                type="number"
+                                id="qty"
+                                name="quantity"
+                                class="form-control"
+                                min="1"
+                                max="{{ product.stock }}"
+                                value="1"
+                                required
+                        >
+                        <p id="stock-error" aria-live="polite" style="color: #c00; font-size: 0.9rem; margin: 0.5rem 0;"></p>
+                    </div>
+                    <button
+                            id="add-btn"
+                            type="submit"
+                            class="btn btn-primary"
+                            style="margin-top:1rem;"
+                    >
+                        Add to Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+        const helpBtn   = document.getElementById('helpBtn');
+        const helpModal = document.getElementById('helpModal');
+        const closeBtn  = helpModal.querySelector('.close-btn');
+
+        helpBtn.addEventListener('click', () => {
+            helpModal.style.display = 'block';
+        });
+        closeBtn.addEventListener('click', () => {
+            helpModal.style.display = 'none';
+        });
+        window.addEventListener('click', e => {
+            if (e.target === helpModal) {
+                helpModal.style.display = 'none';
+            }
+        });
+
+        const qtyInput = document.getElementById('qty');
+        const addBtn   = document.getElementById('add-btn');
+        const errMsg   = document.getElementById('stock-error');
+
+        qtyInput.addEventListener('input', () => {
+            const val = parseInt(qtyInput.value) || 0;
+            const max = parseInt(qtyInput.max);
+            if (val < 1 || val > max) {
+                errMsg.textContent = `Enter a number between 1 and ${max}.`;
+                addBtn.disabled = true;
+            } else {
+                errMsg.textContent = '';
+                addBtn.disabled = false;
+            }
+        });
+
+        const focusable = helpModal.querySelectorAll('button, [href], input, textarea, [tabindex]:not([tabindex="-1"])');
+        let firstEl = focusable[0], lastEl = focusable[focusable.length-1];
+        helpModal.addEventListener('keydown', e => {
+            if (e.key === 'Tab') {
+                if (e.shiftKey && document.activeElement === firstEl) {
+                    e.preventDefault();
+                    lastEl.focus();
+                } else if (!e.shiftKey && document.activeElement === lastEl) {
+                    e.preventDefault();
+                    firstEl.focus();
+                }
+            }
+            if (e.key === 'Escape') {
+                helpModal.style.display = 'none';
+                helpBtn.focus();
+            }
+        });
+    </script>
+
+    <section class="container" style="padding: 2rem 0;">
+        <div class="section-title">
+            <h3>You Might Also Like</h3>
+        </div>
+        <div class="row" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            {% for rp in random_products %}
+                <div class="col" style="flex: 1 1 200px; border: 1px solid #eee; border-radius: .5rem; padding: 1rem; text-align: center;">
+                    <a href="{{ url_for('product_detail', product_id=rp.id) }}">
+                        <img
+                                src="{{ url_for('static', filename='images/' + rp.image) }}"
+                                alt="{{ rp.name }}"
+                                style="width:100%; height:150px; object-fit:cover; border-radius:.25rem;"
+                        />
+                    </a>
+                    <h4 style="margin: .5rem 0;">{{ rp.name }}</h4>
+                    <p style="margin: .25rem 0;"><strong>{{ rp.price }} SAR</strong></p>
+                    <form method="POST" action="{{ url_for('add_to_cart', product_id=rp.id) }}">
+                        <button type="submit" class="btn btn-sm btn-primary">Add to Cart</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

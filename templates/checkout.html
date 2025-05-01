@@ -14,7 +14,7 @@
         <div>
             <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Shipping Information</h3>
 
-            <form method="POST" action="{{ url_for('place_order') }}">
+            <form novalidate method="POST" action="{{ url_for('place_order') }}">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
                         <label for="firstName" class="form-label">First Name</label>

@@ -8,7 +8,7 @@
         <div class="form-container">
             <h2>Create an Account</h2>
 
-            <form method="POST" action="{{ url_for('signup') }}">
+            <form novalidate method="POST" action="{{ url_for('signup') }}">
                 <div class="form-group">
                     <label for="username" class="form-label">Full Name</label>
                     <input type="text" id="username" name="username" class="form-control" required>
@@ -25,6 +25,7 @@
                     <small class="form-text">Password must be at least 8 characters long</small>
                 </div>
 
+                <!-- New Password Confirmation Field -->
                 <div class="form-group">
                     <label for="confirm_password" class="form-label">Confirm Password</label>
                     <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>

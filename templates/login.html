@@ -7,7 +7,7 @@
         <div class="form-container">
             <h2>Login to Your Account</h2>
 
-            <form method="POST" action="{{ url_for('login') }}">
+            <form novalidate method="POST" action="{{ url_for('login') }}">
                 <div class="form-group">
                     <label for="email" class="form-label">Email Address</label>
                     <input type="email" id="email" name="email" class="form-control" required>
