@@ -1,6 +1,6 @@
 /* Modern Pharma Website Styles */
 :root {
-    --primary: #2871e6;
+    --primary: #1a6f8a;
     --primary-dark: #5b74f3;
     --secondary: #1cc88a;
     --secondary-dark: #16a66f;
@@ -34,6 +34,16 @@ body {
     color: var(--gray-800);
     background-color: var(--light);
 }
+
+:focus {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+button:focus,
+a:focus {
+    outline: 3px solid var(--primary);
+}
+
 
 a {
     color: var(--primary);
@@ -576,6 +586,53 @@ nav ul li a:hover::after {
     padding: 0.5rem 0.75rem;
 }
 
+/* Help Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+}
+.modal-content {
+    background: #fff;
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    width: 90%; max-width: 500px;
+    position: relative;
+}
+.close-btn {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.btn-help {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--primary);
+    cursor: pointer;
+}
+.btn-help:hover {
+    color: var(--primary-dark);
+}
+
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #000;
+    color: #fff;
+    padding: 0.5rem;
+    z-index: 100;
+    transition: top 0.3s;
+}
+.skip-link:focus {
+    top: 0;
+}
 
 /* Footer */
 footer {
